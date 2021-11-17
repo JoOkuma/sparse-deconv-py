@@ -91,11 +91,11 @@ def deblur_core(data, kernel, iteration, rule):
 
                 alpha = sum(sum(vk_update * vk))/(sum(sum(vk_update * vk_update)) + math.e)
                 alpha = xp.maximum(xp.minimum(alpha, 1), 1e-6, dtype = 'float32')
-               # start = time.clock()
+               # start = time.process_time()
                 yk = xk + alpha * (xk - xk_update)
                 yk = xp.maximum(yk, 1e-6, dtype = 'float32')
                 yk[xp.isnan(yk)] = 1e-6
-                #end = time.clock()
+                #end = time.process_time()
                # print(start, end)
                 #K=np.isnan(yk)
 

@@ -1,7 +1,7 @@
 
 import gc
-from operation import *
-from sparse_iteration import *
+from .operation import *
+from .sparse_iteration import *
 import numpy as np
 try:
     import cupy as cp
@@ -88,7 +88,7 @@ def sparse_hessian(f, iteration_num = 100, fidelity = 150, sparsity = 10, contiz
 
         g_update = xp.fft.fftn(g_update)
 
-        if iter == 1:
+        if iter == 0:
             g = xp.fft.ifftn(g_update / (fidelity / mu)).real
 
         else:

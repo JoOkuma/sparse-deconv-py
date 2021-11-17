@@ -5,11 +5,11 @@ import time
 
 from matplotlib import pyplot as plt
 
-from sparse_recon.sparse_hessian_recon.sparse_hessian_recon import sparse_hessian
-from sparse_recon.iterative_deconv.iterative_deconv import iterative_deconv
-from sparse_recon.iterative_deconv.kernel import Gauss
-from utils.background_estimation import background_estimation
-from utils.upsample import spatial_upsample, fourier_upsample
+from .sparse_hessian_recon.sparse_hessian_recon import sparse_hessian
+from .iterative_deconv.iterative_deconv import iterative_deconv
+from .iterative_deconv.kernel import Gauss
+from .utils.background_estimation import background_estimation
+from .utils.upsample import spatial_upsample, fourier_upsample
 try:
     import cupy as cp
 except ImportError:
@@ -118,9 +118,9 @@ def sparse_deconv(im, sigma, sparse_iter = 100, fidelity = 150, sparsity = 10, t
     elif up_sample == 2:
         im = spatial_upsample(im)
     im = im / (im.max())
-    start = time.clock()
+    start = time.process_time()
     img_sparse = sparse_hessian(im, sparse_iter, fidelity, sparsity, tcontinuity)
-    end = time.clock()
+    end = time.process_time()
     print('sparse hessian time')
     print(end - start)
     img_sparse = img_sparse / (img_sparse.max())
@@ -128,10 +128,11 @@ def sparse_deconv(im, sigma, sparse_iter = 100, fidelity = 150, sparsity = 10, t
         img_last = img_sparse
         return index * img_last
     else:
-        start = time.clock()
+        start = time.process_time()
         kernel = Gauss(sigma)
+        print('Kernel shape', kernel.shape)
         img_last = iterative_deconv(img_sparse, kernel, deconv_iter, rule = deconv_type)
-        end = time.clock()
+        end = time.process_time()
         print('deconv time')
         print(end - start)
         return index * img_last
